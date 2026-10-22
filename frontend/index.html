@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>CropDr. – AI Crop Disease Detector</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+<link href="css/style.css" rel="stylesheet" />
+</head>
+<body>
+
+<!-- LOADING SCREEN -->
+<div id="page-loading">
+  <div class="loader-leaf">🌿</div>
+  <div class="loader-logo">CropDr.</div>
+  <div class="loader-bar"><div class="loader-fill"></div></div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">✅ Action completed!</div>
+
+<!-- NAVBAR -->
+<nav class="navbar" id="navbar">
+  <div class="nav-brand" onclick="goHome()">
+    <span class="nav-brand-icon">🌾</span>
+    <span class="nav-brand-name">Crop<span>Dr.</span></span>
+  </div>
+  <div style="display:flex;align-items:center;gap:16px;">
+    <select class="form-input lang-switch" style="padding:6px 10px;font-size:.85rem;height:auto;background:rgba(255,255,255,.1);color:#fff;border:1px solid rgba(255,255,255,.2);border-radius:8px;outline:none;cursor:pointer;" onchange="switchLanguage(this.value)">
+      <option style="color:#000;" value="en">English</option>
+      <option style="color:#000;" value="hi">हिंदी (Hindi)</option>
+      <option style="color:#000;" value="mr">मराठी (Marathi)</option>
+    </select>
+    <div class="nav-links" id="nav-links-guest">
+      <span class="nav-link active-link" onclick="window.scrollTo(0,0)" data-i18n="nav_home">Home</span>
+      <span class="nav-link" onclick="document.getElementById('features-section').scrollIntoView({behavior:'smooth'})" data-i18n="nav_features">Features</span>
+      <span class="nav-link" onclick="document.getElementById('about-section').scrollIntoView({behavior:'smooth'})" data-i18n="nav_about">About</span>
+      <button class="nav-cta" onclick="goAuth()" data-i18n="nav_get_started">Get Started</button>
+    </div>
+    <div class="nav-user" id="nav-user" style="display:none; cursor:pointer;" onclick="goDashboard()">
+      <div class="nav-avatar" id="nav-avatar">U</div>
+      <span class="nav-user-name" id="nav-user-name">Farmer</span>
+    </div>
+    <button class="nav-logout" id="nav-logout-btn" style="display:none;" onclick="logout()" data-i18n="nav_logout">Logout</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="hero">
+  <div class="hero-bg-pattern"></div>
+  <div class="hero-grid-lines"></div>
+  <div class="hero-content">
+    <div class="hero-left">
+      <div class="hero-badge" data-i18n="hero_badge">🤖 AI-Powered · Made for Indian Farmers</div>
+      <h1 class="hero-title" data-i18n="hero_title">Protect Your Crops with Intelligent Detection</h1>
+      <p class="hero-subtitle" data-i18n="hero_subtitle">Upload photos of your crops and get instant AI-powered disease diagnosis, stage-wise treatment plans, weather risk predictions, and government scheme recommendations — in your language.</p>
+      <div class="hero-actions">
+        <button class="btn-hero-primary" onclick="goAuth()" data-i18n="btn_hero_primary">🚀 Start Free Analysis</button>
+        <button class="btn-hero-secondary" onclick="document.getElementById('about-section').scrollIntoView({behavior:'smooth'})" data-i18n="btn_hero_secondary">Learn More ↓</button>
+      </div>
+      <div class="hero-stats">
+        <div><div class="hero-stat-value">98%</div><div class="hero-stat-label">Accuracy</div></div>
+        <div><div class="hero-stat-value">50K+</div><div class="hero-stat-label">Farmers</div></div>
+        <div><div class="hero-stat-value">120+</div><div class="hero-stat-label">Diseases</div></div>
+      </div>
+    </div>
+    <div class="hero-right">
+      <div class="feature-card-float">
+        <span class="fcf-icon">🔬</span>
+        <div><div class="fcf-title">Multi-Image Analysis</div><div class="fcf-desc">Upload 5 images for higher confidence diagnosis</div></div>
+      </div>
+      <div class="feature-card-float">
+        <span class="fcf-icon">🌦️</span>
+        <div><div class="fcf-title">Weather Risk Prediction</div><div class="fcf-desc">Real-time humidity & fungal infection alerts</div></div>
+      </div>
+      <div class="feature-card-float">
+        <span class="fcf-icon">🗣️</span>
+        <div><div class="fcf-title">Hindi & Regional Languages</div><div class="fcf-desc">Results in Hindi, Marathi, Telugu & more</div></div>
+      </div>
+      <div class="feature-card-float">
+        <span class="fcf-icon">📍</span>
+        <div><div class="fcf-title">India-Specific Advice</div><div class="fcf-desc">Local pesticides, govt schemes & helplines</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="section how-it-works">
+  <div class="section-inner">
+    <div class="section-label">Simple Process</div>
+    <h2 class="section-title">How <em>CropDr.</em> Works</h2>
+    <p class="section-subtitle">From photo to treatment plan in under 30 seconds. No expertise needed.</p>
+    <div class="steps-grid">
+      <div class="step-card reveal">
+        <div class="step-num">1</div>
+        <div class="step-icon">📸</div>
+        <div class="step-title">Upload Photos</div>
+        <div class="step-desc">Take up to 5 photos of affected crops from different angles for better accuracy.</div>
+      </div>
+      <div class="step-card reveal" style="transition-delay:.1s">
+        <div class="step-num">2</div>
+        <div class="step-icon">🧠</div>
+        <div class="step-title">AI Analysis</div>
+        <div class="step-desc">Our AI compares all images, detects disease stage, and calculates confidence score.</div>
+      </div>
+      <div class="step-card reveal" style="transition-delay:.2s">
+        <div class="step-num">3</div>
+        <div class="step-icon">📋</div>
+        <div class="step-title">Get Report</div>
+        <div class="step-desc">Receive detailed diagnosis with severity level, root cause, and affected area %.</div>
+      </div>
+      <div class="step-card reveal" style="transition-delay:.3s">
+        <div class="step-num">4</div>
+        <div class="step-icon">💊</div>
+        <div class="step-title">Follow Plan</div>
+        <div class="step-desc">Get a day-by-day treatment plan with organic + chemical options available locally.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="section features-section" id="features-section">
+  <div class="section-inner">
+    <div class="section-label">What We Offer</div>
+    <h2 class="section-title">Everything a Farmer <em>Needs</em></h2>
+    <p class="section-subtitle">One platform for disease detection, weather risk, treatment planning, and expert guidance.</p>
+    <div class="features-grid">
+      <div class="feat-card reveal"><div class="feat-card-icon">🔬</div><div class="feat-card-title">Multi-Image Smart Analysis</div><div class="feat-card-desc">Upload 5 images — AI compares all, giving you higher confidence scores and accurate severity detection (Early / Moderate / Severe).</div><span class="feat-tag">Core Feature</span></div>
+      <div class="feat-card reveal" style="transition-delay:.05s"><div class="feat-card-icon">🌦️</div><div class="feat-card-title">Weather-Based Risk Prediction</div><div class="feat-card-desc">Live weather integration predicts disease outbreaks before they happen. "High humidity → fungal risk alert".</div><span class="feat-tag">Smart Alerts</span></div>
+      <div class="feat-card reveal" style="transition-delay:.1s"><div class="feat-card-icon">🗓️</div><div class="feat-card-title">Stage-Wise Treatment Planner</div><div class="feat-card-desc">Day 1, Day 3, Day 7 — step-by-step care guide with organic and chemical treatment options tailored to your crop.</div><span class="feat-tag">AI Planner</span></div>
+      <div class="feat-card reveal" style="transition-delay:.15s"><div class="feat-card-icon">📍</div><div class="feat-card-title">Region-Based Suggestions</div><div class="feat-card-desc">India-specific pesticide availability, local solutions, and government scheme references for your state.</div><span class="feat-tag">Localised</span></div>
+      <div class="feat-card reveal" style="transition-delay:.2s"><div class="feat-card-icon">🗣️</div><div class="feat-card-title">Voice + Regional Languages</div><div class="feat-card-desc">Speak your question and get results in Hindi, Marathi, Telugu, Punjabi — bridging the language barrier.</div><span class="feat-tag">Inclusive</span></div>
+      <div class="feat-card reveal" style="transition-delay:.25s"><div class="feat-card-icon">🤖</div><div class="feat-card-title">AI Chatbot Assistant</div><div class="feat-card-desc">"Why is my crop turning yellow?" — Ask anything in plain language. Your 24/7 agricultural expert.</div><span class="feat-tag">Always On</span></div>
+      <div class="feat-card reveal" style="transition-delay:.3s"><div class="feat-card-icon">📊</div><div class="feat-card-title">Crop Health Dashboard</div><div class="feat-card-desc">Track disease history, recovery progress, scan count, and active alerts across all your crops in one place.</div><span class="feat-tag">Dashboard</span></div>
+      <div class="feat-card reveal" style="transition-delay:.35s"><div class="feat-card-icon">🧪</div><div class="feat-card-title">Fertilizer Recommendations</div><div class="feat-card-desc">Based on detected disease and soil condition, get precise fertilizer suggestions for faster recovery.</div><span class="feat-tag">Soil Health</span></div>
+      <div class="feat-card reveal" style="transition-delay:.4s"><div class="feat-card-icon">🔔</div><div class="feat-card-title">Early Warning Alerts</div><div class="feat-card-desc">"Disease spreading fast — check nearby plants." Proactive notifications so you act before it's too late.</div><span class="feat-tag">Prevention</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section class="section about-section" id="about-section">
+  <div class="section-inner">
+    <div class="section-label">Our Story</div>
+    <h2 class="section-title">Built for <em>Bharat's</em> Farmers</h2>
+    <div class="about-grid">
+      <div class="about-visual">
+        <div class="about-visual-bg"></div>
+        <div class="about-visual-emoji">🌾</div>
+        <div class="about-visual-stat">
+          <div class="about-visual-big">₹50,000 Cr</div>
+          <div class="about-visual-caption">annual crop losses due to undetected diseases in India</div>
+        </div>
+      </div>
+      <div>
+        <p class="about-mission">India has over 146 million farming families, yet most lack access to timely agronomic expertise. Crop diseases alone cause 20–40% yield loss annually. CropDr. was built by a team of engineers and agronomists who believe that AI should serve those who feed the nation.</p>
+        <p class="about-mission">We combine computer vision, real-time weather data, and agricultural science to give every farmer — from Punjab to Tamil Nadu — the power of an expert in their pocket, in their language, for free.</p>
+        <div class="about-values">
+          <div class="about-value">
+            <div class="about-value-icon">🎯</div>
+            <div><div class="about-value-title">Accuracy First</div><div class="about-value-desc">98% detection accuracy across 120+ diseases, validated with ICAR datasets.</div></div>
+          </div>
+          <div class="about-value">
+            <div class="about-value-icon">🤝</div>
+            <div><div class="about-value-title">Farmer-Centric Design</div><div class="about-value-desc">Every feature is co-designed with farmers. Simple, fast, and works on 2G networks.</div></div>
+          </div>
+          <div class="about-value">
+            <div class="about-value-icon">🌱</div>
+            <div><div class="about-value-title">Sustainable Agriculture</div><div class="about-value-desc">We always recommend organic treatments first, reducing chemical dependence.</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<div class="cta-banner">
+  <h2 class="cta-banner-title">Ready to protect your harvest?</h2>
+  <p class="cta-banner-subtitle">Join 50,000+ farmers already using KrishiGuard. Free forever for smallhold farmers.</p>
+  <button class="btn-hero-primary" onclick="goAuth()">🚀 Get Started Free</button>
+</div>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div>
+        <div class="footer-brand-name">🌾 CropDr.</div>
+        <div class="footer-brand-desc">AI-powered crop disease detection for India's farming community. Protecting harvests, empowering farmers.</div>
+      </div>
+      <div>
+        <div class="footer-col-title">Product</div>
+        <span class="footer-link" onclick="document.getElementById('features-section').scrollIntoView({behavior:'smooth'})">Features</span>
+        <span class="footer-link" onclick="goAuth()">Dashboard</span>
+        <span class="footer-link">API Access</span>
+        <span class="footer-link">Pricing</span>
+      </div>
+      <div>
+        <div class="footer-col-title">Company</div>
+        <span class="footer-link" onclick="document.getElementById('about-section').scrollIntoView({behavior:'smooth'})">About Us</span>
+        <span class="footer-link">Blog</span>
+        <span class="footer-link">Careers</span>
+        <span class="footer-link">Press Kit</span>
+      </div>
+      <div>
+        <div class="footer-col-title">Support</div>
+        <span class="footer-link">Help Center</span>
+        <span class="footer-link">Kisan Helpline</span>
+        <span class="footer-link">Privacy Policy</span>
+        <span class="footer-link">Terms of Use</span>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div>© 2026 CropDr. Built with ❤️ for Indian farmers.</div>
+    </div>
+  </div>
+</footer>
+
+<script src="js/main.js"></script>
+</body>
+</html>

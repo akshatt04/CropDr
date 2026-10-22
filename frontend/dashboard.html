@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>CropDr. – Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+<link href="css/style.css" rel="stylesheet" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+</head>
+<body>
+
+<!-- LOADING SCREEN -->
+<div id="page-loading">
+  <div class="loader-leaf">🌿</div>
+  <div class="loader-logo">CropDr.</div>
+  <div class="loader-bar"><div class="loader-fill"></div></div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">✅ Action completed!</div>
+
+<nav class="navbar" style="position:sticky;top:0;">
+  <div class="nav-brand" onclick="goHome()">
+    <span class="nav-brand-icon">🌾</span>
+    <span class="nav-brand-name">Crop<span>Dr.</span></span>
+  </div>
+  <div style="display:flex;align-items:center;gap:16px;">
+    <select class="form-input lang-switch" style="padding:6px 10px;font-size:.85rem;height:auto;background:rgba(255,255,255,.1);color:#fff;border:1px solid rgba(255,255,255,.2);border-radius:8px;outline:none;cursor:pointer;" onchange="switchLanguage(this.value)">
+      <option style="color:#000;" value="en">English</option>
+      <option style="color:#000;" value="hi">हिंदी (Hindi)</option>
+      <option style="color:#000;" value="mr">मराठी (Marathi)</option>
+    </select>
+    <div id="dash-nav-user" class="nav-user">
+      <div class="nav-avatar" id="dash-nav-avatar">U</div>
+      <span class="nav-user-name" id="dash-nav-name">Farmer</span>
+      <button class="nav-logout" onclick="logout()" data-i18n="nav_logout">Logout</button>
+    </div>
+  </div>
+</nav>
+
+<div class="dashboard-layout">
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-section-label" data-i18n="sb_main">Main</div>
+    <div class="sidebar-item active" id="sb-overview" onclick="dashTab('overview')"><span class="sidebar-item-icon">🏠</span> <span data-i18n="sb_overview">Overview</span></div>
+    <div class="sidebar-item" id="sb-detect" onclick="dashTab('detect')"><span class="sidebar-item-icon">🔬</span> <span data-i18n="sb_detect">Detect Disease</span></div>
+    <div class="sidebar-item" id="sb-weather" onclick="dashTab('weather')"><span class="sidebar-item-icon">🌦️</span> <span data-i18n="sb_weather">Weather Risk</span></div>
+    <div class="sidebar-section-label" data-i18n="sb_tools">Tools</div>
+    <div class="sidebar-item" id="sb-history" onclick="dashTab('history')"><span class="sidebar-item-icon">📜</span> <span data-i18n="sb_history">History</span></div>
+    <div class="sidebar-item" id="sb-chatbot" onclick="dashTab('chatbot')"><span class="sidebar-item-icon">🤖</span> <span data-i18n="sb_chatbot">AI Chat</span></div>
+    <div class="sidebar-item" id="sb-alerts" onclick="dashTab('alerts')"><span class="sidebar-item-icon">🔔</span> <span data-i18n="sb_alerts">Alerts</span> <span class="sidebar-badge">2</span></div>
+    <div class="sidebar-section-label" data-i18n="sb_account">Account</div>
+    <div class="sidebar-item" id="sb-profile" onclick="dashTab('profile')"><span class="sidebar-item-icon">👤</span> <span data-i18n="sb_profile">Profile</span></div>
+    <div class="sidebar-item" onclick="logout()"><span class="sidebar-item-icon">🚪</span> <span data-i18n="sb_logout">Logout</span></div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="dashboard-main">
+
+    <!-- ── OVERVIEW TAB ── -->
+    <div id="dtab-overview">
+      <div class="dash-header">
+        <div>
+          <div class="dash-greeting">Good morning 👋</div>
+          <div class="dash-title" id="dash-welcome-name">Welcome back, Farmer</div>
+          <div class="dash-date" id="dash-date"></div>
+        </div>
+        <button class="btn-analyze" style="width:auto;padding:12px 22px;" onclick="dashTab('detect')">+ New Scan</button>
+      </div>
+
+      <div class="stats-row">
+        <div class="stat-card green"><div class="stat-icon">🌾</div><div class="stat-value">3</div><div class="stat-label">Crops Monitored</div><div class="stat-change up">↑ 1 this week</div></div>
+        <div class="stat-card amber"><div class="stat-icon">🔬</div><div class="stat-value" id="total-scans-val">12</div><div class="stat-label">Total Scans</div><div class="stat-change up">↑ 3 new</div></div>
+        <div class="stat-card sky"><div class="stat-icon">✅</div><div class="stat-value">8</div><div class="stat-label">Issues Resolved</div><div class="stat-change up">↑ 2 this month</div></div>
+        <div class="stat-card danger"><div class="stat-icon">⚠️</div><div class="stat-value">2</div><div class="stat-label">Active Alerts</div><div class="stat-change down">↑ needs attention</div></div>
+      </div>
+
+      <div class="dash-grid-2">
+        <!-- Quick Detect Redirect -->
+        <div class="dash-card" style="display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:40px 20px;">
+          <div style="font-size:3rem;margin-bottom:16px;">🔬</div>
+          <div class="dash-card-title" style="border:none;padding:0;margin-bottom:12px;font-size:1.2rem;"><span data-i18n="quick_scan">Start a New Disease Scan</span></div>
+          <p style="color:var(--muted);font-size:.9rem;margin-bottom:24px;">Upload multiple photos and describe the symptoms for an accurate AI diagnosis.</p>
+          <button class="btn-hero-primary" onclick="dashTab('detect')" style="width:100%;max-width:260px;padding:12px;border:none;border-radius:10px;display:flex;align-items:center;justify-content:center;gap:8px;" data-i18n="sb_detect">Go to Detect Disease</button>
+        </div>
+
+        <!-- Weather Widget -->
+        <div class="dash-card">
+          <div class="dash-card-title" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
+            <div style="display:flex;align-items:center;gap:8px;">
+              <span data-i18n="weather_risk_today">🌦️ Weather Risk</span>
+              <select id="overview-weather-select" onchange="changeWeatherLocation(this.value)" style="padding:4px 8px;font-size:.8rem;border:1px solid var(--border);border-radius:6px;outline:none;background:#fff;cursor:pointer;">
+                <option value="Maharashtra">Maharashtra</option>
+                <option value="Punjab">Punjab</option>
+                <option value="Uttar Pradesh">Uttar Pradesh</option>
+                <option value="Madhya Pradesh">Madhya Pradesh</option>
+                <option value="Gujarat">Gujarat</option>
+                <option value="Haryana">Haryana</option>
+                <option value="Rajasthan">Rajasthan</option>
+                <option value="Karnataka">Karnataka</option>
+                <option value="Andhra Pradesh">Andhra Pradesh</option>
+                <option value="Telangana">Telangana</option>
+                <option value="Tamil Nadu">Tamil Nadu</option>
+                <option value="West Bengal">West Bengal</option>
+                <option value="Bihar">Bihar</option>
+                <option value="Odisha">Odisha</option>
+                <option value="Kerala">Kerala</option>
+              </select>
+            </div>
+            <span class="dash-card-action" onclick="dashTab('weather')">Details →</span>
+          </div>
+          <div class="weather-widget">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+              <div>
+                <div class="weather-temp">--°C</div>
+                <div class="weather-condition">Loading weather...</div>
+              </div>
+              <div style="text-align:right;font-size:.82rem;opacity:.8;">Loading...</div>
+            </div>
+            <div class="weather-risk">
+              <div class="weather-risk-title">🦠 Disease Risk: <span>CHECKING...</span></div>
+              <div class="weather-risk-desc">Fetching real-time environmental data...</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Active Alerts Banner -->
+      <div id="overview-alerts-container"></div>
+
+      <!-- My Recent Scans (Current User Only) -->
+      <div class="dash-card">
+        <div class="dash-card-title"><span>📜 Recent Scans</span> <span class="dash-card-action" onclick="dashTab('history')">View All History →</span></div>
+        <table class="history-table" id="overview-my-scans-table">
+          <tr><th>Date</th><th>Crop</th><th>Disease</th><th>Severity</th><th>Result</th><th>Action</th></tr>
+          <tr><td colspan="6" style="text-align:center;color:var(--muted);padding:20px;">Loading your scans...</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- ── DETECT TAB ── -->
+    <div id="dtab-detect" style="display:none;">
+      <div id="scan-detail-nav-area" style="display:none;"></div>
+      <div class="dash-header"><div><div class="dash-greeting" data-i18n="dash_greeting_ai">AI Analysis</div><div class="dash-title" data-i18n="dash_title_detect">Detect Crop Disease</div></div></div>
+      <div class="dash-grid-2">
+        <div class="dash-card" id="detect-upload-card">
+          <div class="dash-card-title" data-i18n="upload_images_5">📸 Upload Images (up to 5)</div>
+          <div class="upload-zone" onclick="document.getElementById('det-file').click()">
+            <div class="upload-zone-icon">🌿</div>
+            <div class="upload-zone-text" data-i18n="tap_to_choose">Tap to choose crop photos</div>
+            <div class="upload-zone-sub" data-i18n="multiple_angles">Multiple angles = higher accuracy</div>
+          </div>
+          <input type="file" id="det-file" accept="image/*" multiple style="display:none;" onchange="handleDetectUpload(event)" />
+          <div class="image-preview-row" id="det-previews"></div>
+          <div style="margin-bottom:14px;">
+            <label class="form-label" data-i18n="problem_desc">Problem Description (Optional)</label>
+            <div class="voice-input-wrap">
+              <textarea class="form-input" id="det-desc" rows="3" data-i18n-placeholder="desc_placeholder" placeholder="Describe the symptoms, e.g., 'Yellow spots on leaves for 3 days...'" oninput="checkDetectEnable()" style="resize:vertical;padding-right:48px;"></textarea>
+              <button class="mic-btn" id="det-mic-btn" type="button" onclick="toggleVoice('det-desc','det-mic-btn')" title="Speak your description">
+                <svg class="mic-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 1 3 3v6a3 3 0 0 1-6 0V5a3 3 0 0 1 3-3z"/><path d="M19 10a7 7 0 0 1-14 0"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+              </button>
+            </div>
+            <div class="voice-status" id="det-voice-status">
+              <span class="voice-dot"></span> Listening… speak now
+            </div>
+          </div>
+          <div style="margin-bottom:14px;">
+            <label class="form-label" data-i18n="response_language">Response Language</label>
+            <select class="form-input" id="det-lang">
+              <option>English</option>
+              <option>हिंदी (Hindi)</option>
+              <option>मराठी (Marathi)</option>
+              <option>తెలుగు (Telugu)</option>
+              <option>ਪੰਜਾਬੀ (Punjabi)</option>
+            </select>
+          </div>
+          <button class="btn-analyze" id="det-analyze-btn" onclick="runDetectAnalysis()" disabled data-i18n="analyze_btn">🧠 Analyze with AI</button>
+        </div>
+        <div class="dash-card" style="overflow-y:auto;max-height:620px;">
+          <div class="dash-card-title" data-i18n="analysis_results">📋 Analysis Results</div>
+          <div id="det-result" style="color:var(--muted);font-size:.9rem;text-align:center;padding:40px 20px;">
+            <div style="font-size:2.5rem;margin-bottom:12px;">🌱</div>
+            <span data-i18n="upload_to_see">Upload images and click Analyze to see results here.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── WEATHER TAB ── -->
+    <div id="dtab-weather" style="display:none;">
+      <div class="dash-header">
+        <div>
+          <div class="dash-greeting">Live Weather & Risk</div>
+          <div class="dash-title">Agricultural Weather Monitor</div>
+        </div>
+      </div>
+
+      <!-- Location Selector Card -->
+      <div class="dash-card" style="margin-bottom:20px;">
+        <div class="dash-card-title">📍 Select Farm Location in India</div>
+        <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:14px;">
+          <div style="flex:1;min-width:260px;display:flex;gap:8px;">
+            <input type="text" id="weather-custom-input" class="form-input" placeholder="Search any city, district, or village in India (e.g. Pune, Ludhiana, Nashik, Varanasi)..." onkeydown="if(event.key==='Enter')searchCustomLocation()" />
+            <button class="btn-primary" style="white-space:nowrap;padding:10px 20px;border-radius:10px;" onclick="searchCustomLocation()">🔍 Check</button>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span style="font-size:.85rem;font-weight:600;color:var(--muted);white-space:nowrap;">or pick state:</span>
+            <select id="weather-state-select" onchange="changeWeatherLocation(this.value)" class="form-input" style="width:auto;min-width:200px;cursor:pointer;">
+              <option value="Maharashtra">Maharashtra (Pune)</option>
+              <option value="Punjab">Punjab (Ludhiana)</option>
+              <option value="Uttar Pradesh">Uttar Pradesh (Lucknow)</option>
+              <option value="Madhya Pradesh">Madhya Pradesh (Indore)</option>
+              <option value="Gujarat">Gujarat (Ahmedabad)</option>
+              <option value="Haryana">Haryana (Karnal)</option>
+              <option value="Rajasthan">Rajasthan (Jaipur)</option>
+              <option value="Karnataka">Karnataka (Bengaluru)</option>
+              <option value="Andhra Pradesh">Andhra Pradesh (Vijayawada)</option>
+              <option value="Telangana">Telangana (Hyderabad)</option>
+              <option value="Tamil Nadu">Tamil Nadu (Coimbatore)</option>
+              <option value="West Bengal">West Bengal (Kolkata)</option>
+              <option value="Bihar">Bihar (Patna)</option>
+              <option value="Odisha">Odisha (Bhubaneswar)</option>
+              <option value="Kerala">Kerala (Thrissur)</option>
+              <option value="Assam">Assam (Guwahati)</option>
+              <option value="Himachal Pradesh">Himachal Pradesh (Shimla)</option>
+              <option value="Uttarakhand">Uttarakhand (Dehradun)</option>
+              <option value="Chhattisgarh">Chhattisgarh (Raipur)</option>
+              <option value="Jharkhand">Jharkhand (Ranchi)</option>
+            </select>
+          </div>
+        </div>
+        <!-- Quick pills -->
+        <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
+          <span style="font-size:.78rem;color:var(--muted);font-weight:600;">Popular:</span>
+          <button style="padding:4px 12px;border-radius:20px;background:var(--green-pale);border:1px solid var(--border);color:var(--green-dark);font-size:.78rem;cursor:pointer;font-weight:600;" onclick="changeWeatherLocation('Maharashtra')">Maharashtra</button>
+          <button style="padding:4px 12px;border-radius:20px;background:var(--green-pale);border:1px solid var(--border);color:var(--green-dark);font-size:.78rem;cursor:pointer;font-weight:600;" onclick="changeWeatherLocation('Punjab')">Punjab</button>
+          <button style="padding:4px 12px;border-radius:20px;background:var(--green-pale);border:1px solid var(--border);color:var(--green-dark);font-size:.78rem;cursor:pointer;font-weight:600;" onclick="changeWeatherLocation('Uttar Pradesh')">Uttar Pradesh</button>
+          <button style="padding:4px 12px;border-radius:20px;background:var(--green-pale);border:1px solid var(--border);color:var(--green-dark);font-size:.78rem;cursor:pointer;font-weight:600;" onclick="changeWeatherLocation('Gujarat')">Gujarat</button>
+          <button style="padding:4px 12px;border-radius:20px;background:var(--green-pale);border:1px solid var(--border);color:var(--green-dark);font-size:.78rem;cursor:pointer;font-weight:600;" onclick="changeWeatherLocation('Madhya Pradesh')">Madhya Pradesh</button>
+          <button style="padding:4px 12px;border-radius:20px;background:var(--green-pale);border:1px solid var(--border);color:var(--green-dark);font-size:.78rem;cursor:pointer;font-weight:600;" onclick="changeWeatherLocation('Karnataka')">Karnataka</button>
+        </div>
+      </div>
+
+      <div class="dash-grid-2">
+        <div class="dash-card">
+          <div class="dash-card-title">🌡️ Current Conditions · <span id="weather-tab-location-title" style="color:var(--green-base);">Loading...</span></div>
+          <div class="weather-widget" style="margin-bottom:16px;">
+            <div style="font-size:.82rem;opacity:.7;text-transform:uppercase;letter-spacing:.8px;margin-bottom:6px;" id="weather-tab-location-sub">Maharashtra, India</div>
+            <div style="display:flex;align-items:flex-end;gap:12px;">
+              <div class="weather-temp">--°C</div><div style="font-size:2.5rem;" id="weather-tab-emoji">🌤</div>
+            </div>
+            <div class="weather-condition" id="weather-tab-condition-text">Loading weather...</div>
+          </div>
+          <div class="dash-card-title" style="margin-top:4px;">📅 Multi-day Forecast</div>
+          <div id="weather-tab-forecast" style="display:flex;gap:12px;margin-top:16px;overflow-x:auto;">
+             <div style="text-align:center;color:var(--muted);width:100%;">Loading forecast...</div>
+          </div>
+        </div>
+        <div class="dash-card">
+          <div class="dash-card-title">⚠️ Disease Risk & Advisory</div>
+          <div id="weather-tab-risk-box" style="margin-bottom:14px;">
+            <div class="weather-risk" style="background:#fff;border:1px solid var(--border);padding:14px;border-radius:10px;">
+              <div class="weather-risk-title" id="weather-tab-risk-level">🦠 Disease Risk: <span>CHECKING...</span></div>
+              <div class="weather-risk-desc" id="weather-tab-risk-desc">Evaluating pathogen conditions...</div>
+            </div>
+          </div>
+          <div class="dash-card-title" style="margin-top:10px;">🔔 Live Agricultural Alerts</div>
+          <div id="weather-tab-alerts-list" style="display:flex;flex-direction:column;gap:10px;">
+            <div style="text-align:center;color:var(--muted);padding:20px;font-size:.9rem;">Loading alerts...</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── HISTORY TAB ── -->
+    <div id="dtab-history" style="display:none;">
+      <div class="dash-header">
+        <div>
+          <div class="dash-greeting">Track Progress</div>
+          <div class="dash-title">Scan History</div>
+        </div>
+        <button class="btn-analyze" style="width:auto;padding:12px 22px;" onclick="dashTab('detect'); resetDetectView()">+ New Scan</button>
+      </div>
+      <div class="dash-card">
+        <div class="dash-card-title">📜 All Disease Detections</div>
+        <div class="history-filter-bar">
+          <input type="text" class="history-search" id="history-search-input" placeholder="Search by crop or disease name..." oninput="filterHistoryTable()" />
+          <div class="history-stat-pills" id="history-stat-pills"></div>
+        </div>
+        <div id="history-table-container">
+          <table class="history-table" id="history-main-table" style="width:100%;">
+            <tr><th>Date</th><th>Crop</th><th>Disease</th><th>Confidence</th><th>Severity</th><th>Treatment</th><th>Actions</th></tr>
+            <tr><td colspan="7" style="text-align:center;color:var(--muted);padding:20px;">Loading scans...</td></tr>
+          </table>
+        </div>
+      </div>
+      <div class="dash-grid-2" style="margin-top:20px;">
+        <div class="dash-card">
+          <div class="dash-card-title">🏆 Crop Health Score</div>
+          <div style="text-align:center;padding:16px 0;">
+            <div style="font-family:var(--ff-head);font-size:4rem;color:var(--green-base);font-weight:900;line-height:1;" id="health-score-val">—</div>
+            <div style="font-size:.85rem;color:var(--muted);margin:6px 0 16px;" id="health-score-label">Analyzing your crop health...</div>
+            <div style="background:var(--green-pale);border-radius:var(--radius);padding:12px;font-size:.85rem;line-height:1.6;color:var(--green-dark);" id="health-score-desc">Complete some scans to see your crop health score.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── CHATBOT TAB ── -->
+    <div id="dtab-chatbot" style="display:none;">
+      <div class="dash-header"><div><div class="dash-greeting">24/7 AI Assistant</div><div class="dash-title">CropDr. Chat</div></div></div>
+      <div class="dash-grid-2" style="grid-template-columns: 2fr 1fr;">
+        <div class="dash-card" style="display:flex;flex-direction:column;height:650px;">
+          <div class="dash-card-title">🤖 Ask Anything About Your Crops</div>
+          <div class="chatbot-container" style="flex:1;display:flex;flex-direction:column;overflow:hidden;">
+            <div class="chat-messages" id="chat-messages" style="flex:1;overflow-y:auto;padding-bottom:10px;">
+              <div class="chat-msg ai">🌱 Namaste! I'm your CropDr. AI assistant. Ask me anything about crop diseases, treatments, fertilizers, or weather effects. I can respond in Hindi too!</div>
+              <div class="chat-msg ai">💡 <strong>Try asking:</strong> "Why is my wheat turning yellow?" or "What should I spray for fungal infection?"</div>
+            </div>
+            <div id="chat-end"></div>
+            <div class="chat-input-row" style="margin-top:10px;">
+              <input class="chat-input" id="chat-input-field" type="text" placeholder="Ask about your crops... (English or Hindi)" onkeydown="if(event.key==='Enter')sendChatMsg()" />
+              <button class="mic-btn mic-btn-inline" id="chat-mic-btn" type="button" onclick="toggleVoice('chat-input-field','chat-mic-btn')" title="Speak your question">
+                <svg class="mic-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 1 3 3v6a3 3 0 0 1-6 0V5a3 3 0 0 1 3-3z"/><path d="M19 10a7 7 0 0 1-14 0"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+              </button>
+              <button class="chat-send" onclick="sendChatMsg()" style="border:none;">Send</button>
+            </div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;">
+              <button style="padding:6px 12px;border-radius:20px;background:var(--green-pale);color:var(--green-dark);font-size:.78rem;font-weight:600;border:1px solid var(--green-light);cursor:pointer;" onclick="quickChat('Why is my crop turning yellow?')">Why is my crop turning yellow?</button>
+              <button style="padding:6px 12px;border-radius:20px;background:var(--green-pale);color:var(--green-dark);font-size:.78rem;font-weight:600;border:1px solid var(--green-light);cursor:pointer;" onclick="quickChat('What should I spray for fungal infection?')">Fungal infection spray?</button>
+            </div>
+          </div>
+        </div>
+        <div class="dash-card" style="display:flex;flex-direction:column;height:650px;">
+          <div class="dash-card-title" style="display:flex;justify-content:space-between;align-items:center;">
+            <span>🕰️ Your Conversations</span>
+            <button onclick="startNewChat()" style="background:var(--green-base);color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:.8rem;font-weight:600;cursor:pointer;">+ New Chat</button>
+          </div>
+          <div id="chat-sessions-list" style="overflow-y:auto;flex:1;display:flex;flex-direction:column;gap:8px;">
+            <div style="text-align:center;color:var(--muted);padding:20px;font-size:.9rem;">Loading history...</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── ALERTS TAB ── -->
+    <div id="dtab-alerts" style="display:none;">
+      <div class="dash-header"><div><div class="dash-greeting">Stay Ahead</div><div class="dash-title">Early Warning Alerts</div></div></div>
+      <div class="dash-card" style="max-width:680px;">
+        <div class="dash-card-title">🔔 Active Alerts</div>
+        <div id="alerts-tab-container">
+          <div style="text-align:center;color:var(--muted);padding:20px;font-size:.9rem;">Loading live alerts...</div>
+        </div>
+        <div style="border-top:1px solid var(--border);margin:16px 0;padding-top:16px;">
+          <div style="font-weight:700;margin-bottom:12px;">📢 Recent Notifications</div>
+          <div id="alerts-tab-recent" style="text-align:center;color:var(--muted);padding:10px;font-size:.85rem;">
+            No recent notifications
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── PROFILE TAB ── -->
+    <div id="dtab-profile" style="display:none;">
+      <div class="dash-header"><div><div class="dash-greeting">Account</div><div class="dash-title">Your Profile</div></div></div>
+      
+      <!-- Profile Info Section -->
+      <div class="profile-grid">
+        <div>
+          <div class="profile-card">
+            <div class="profile-avatar-lg" id="profile-avatar-lg">U</div>
+            <div class="profile-name" id="profile-name-display">Farmer</div>
+            <div class="profile-email" id="profile-email-display">farmer@example.com</div>
+            <span class="profile-tag">🌾 Smallhold Farmer</span>
+            <div style="margin-top:20px;padding:14px;background:var(--green-pale);border-radius:var(--radius);text-align:left;">
+              <div style="font-size:.8rem;font-weight:700;color:var(--green-dark);margin-bottom:4px;">🌱 Plan: Free Forever</div>
+              <div style="font-size:.78rem;color:var(--green-base);">Unlimited scans · All features included</div>
+            </div>
+          </div>
+        </div>
+        <div class="profile-details">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+            <div style="font-weight:700;font-size:1rem;">📋 Farmer Details</div>
+            <button class="btn-edit-profile" onclick="openEditProfileModal()">✏️ Edit Profile</button>
+          </div>
+          <div class="profile-field"><div class="profile-field-label">Full Name</div><div class="profile-field-value" id="pf-name">—</div></div>
+          <div class="profile-field"><div class="profile-field-label">Email Address</div><div class="profile-field-value" id="pf-email">—</div></div>
+          <div class="profile-field"><div class="profile-field-label">Location</div><div class="profile-field-value" id="pf-location">Maharashtra, India</div></div>
+          <div class="profile-field"><div class="profile-field-label">Primary Crops</div><div class="profile-field-value" id="pf-crops">Wheat, Cotton, Soybeans</div></div>
+          <div class="profile-field"><div class="profile-field-label">Preferred Language</div><div class="profile-field-value" id="pf-lang">English / हिंदी</div></div>
+        </div>
+      </div>
+
+      <!-- User's Scans Section -->
+      <div class="dash-card" style="margin-top:28px;">
+        <div class="dash-card-title">📊 Your Scan History</div>
+        <div id="profile-scans-container">
+          <div style="text-align:center;color:var(--muted);padding:20px;font-size:.9rem;">Loading your scans...</div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- EDIT PROFILE MODAL -->
+<div id="edit-profile-modal" class="diagnosis-modal" onclick="closeEditProfileModal(event)">
+  <div class="diagnosis-modal-content" onclick="event.stopPropagation()">
+    <div class="diagnosis-modal-header">
+      <div class="diagnosis-modal-title">👤 Edit Your Profile</div>
+      <button class="diagnosis-modal-close" onclick="closeEditProfileModal()">✕</button>
+    </div>
+    <form id="edit-profile-form" onsubmit="handleEditProfileSubmit(event)">
+      <div class="diagnosis-modal-body">
+        <div class="form-group">
+          <label class="form-label">Full Name</label>
+          <input type="text" id="edit-pf-name" class="form-input" required />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Location</label>
+          <input type="text" id="edit-pf-location" class="form-input" placeholder="e.g. Maharashtra, India" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Primary Crops</label>
+          <input type="text" id="edit-pf-crops" class="form-input" placeholder="e.g. Wheat, Cotton, Rice" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Preferred Language</label>
+          <select id="edit-pf-lang" class="form-input">
+            <option value="English">English</option>
+            <option value="Hindi">हिंदी (Hindi)</option>
+            <option value="Marathi">मराठी (Marathi)</option>
+          </select>
+        </div>
+      </div>
+      <div class="diagnosis-modal-footer">
+        <button type="button" class="diagnosis-modal-btn cancel" onclick="closeEditProfileModal()">Cancel</button>
+        <button type="submit" class="diagnosis-modal-btn download">💾 Save Changes</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- DIAGNOSIS MODAL POPUP -->
+<div id="diagnosis-modal" class="diagnosis-modal" onclick="closeDiagnosisModal(event)">
+  <div class="diagnosis-modal-content" onclick="event.stopPropagation()">
+    <div class="diagnosis-modal-header">
+      <div class="diagnosis-modal-title">📋 Diagnosis Summary</div>
+      <button class="diagnosis-modal-close" onclick="closeDiagnosisModal()">✕</button>
+    </div>
+    <div id="diagnosis-modal-body" class="diagnosis-modal-body">
+      <!-- Content will be populated dynamically -->
+    </div>
+    <div class="diagnosis-modal-footer">
+      <button class="diagnosis-modal-btn cancel" onclick="closeDiagnosisModal()">Close</button>
+      <button class="diagnosis-modal-btn download" onclick="downloadDiagnosisPDF()">📄 Download PDF Report</button>
+    </div>
+  </div>
+</div>
+
+<script src="js/main.js"></script>
+<script src="js/dashboard.js"></script>
+</body>
+</html>
